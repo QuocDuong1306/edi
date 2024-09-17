@@ -15,4 +15,5 @@ class ResPartner(models.Model):
         column1="partner_id",
         column2="conf_id",
         # TODO: Domain for Purchase model
+        domain="[('model_name', '=', 'purchase.order')]"
     )

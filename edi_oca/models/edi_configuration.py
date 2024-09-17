@@ -40,8 +40,7 @@ class EdiConfiguration(models.Model):
     model = fields.Many2one(
         "ir.model", string="Model", help="Model the conf applies to. Leave blank to apply for all models"
     )
-    # TODO: Create the `model_name` field : easy search through the name of the model,
-    # eg: in case, we don't know the ID of model,...
+    model_name = fields.Char(related="model.model", store=True)
     partner_ids = fields.Many2many(
         string="Enabled for partners",
         comodel_name="res.partner",
@@ -82,6 +81,17 @@ class EdiConfiguration(models.Model):
                     raise exceptions.ValidationError(
                         _("Backend type must match with exchange type's backend type!")
                     )
+
+    @api.model
+    def default_get(self, fields):
+        vals = super().default_get(fields)
+        model = self.env.context.get('default_model_name', False)
+        partners = self.env.context.get('default_partner_ids', False)
+        if model:
+            vals['model'] = self.env['ir.model']._get_id(model)
+        if partners and isinstance(partners, list):
+            vals['partner_ids'] = [(6, 0, partners)]
+        return vals
 
     def _code_snippet_valued(self, snippet):
         snippet = snippet or ""
@@ -193,8 +203,8 @@ class EdiConfiguration(models.Model):
         if model_name:
             domain += [
                 "|",
-                ("model.model", "=", model_name),
-                ("model.model", "=", False)
+                ("model_name", "=", model_name),
+                ("model_name", "=", False)
             ]
         if partners:
             domain += [

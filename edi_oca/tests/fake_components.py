@@ -141,7 +141,6 @@ class FakeConfigurationListener(FakeComponentMixin):
     _inherit = "base.event.listener"
     _apply_on = ["edi.exchange.consumer.test"]
 
-    # TODO: Add tests for partner_ids
 
     def on_record_write(self, record, fields=None, **kwargs):
         trigger = "on_record_write"
@@ -164,7 +163,6 @@ class FakeConfigurationListener(FakeComponentMixin):
                 confs = edi_configuration.edi_get_conf(
                     trigger, model_name=rec._name, backend=backend_id
                 )
-                print("Configuring: ", confs)
                 for conf in confs:
                     conf.edi_exec_snippet_do(rec, **kwargs)
         return True

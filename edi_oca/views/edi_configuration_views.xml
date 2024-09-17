@@ -61,7 +61,7 @@
                         </group>
                         <group>
                             <field name="trigger" />
-                            <field name="model" nocreate="1" />
+                            <field name="model" options="{'no_create': True, 'no_create_edi': True}" />
                         </group>
                     </group>
                     <notebook>
