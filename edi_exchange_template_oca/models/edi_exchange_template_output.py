@@ -121,7 +121,9 @@ class EDIExchangeOutputTemplate(models.Model):
         return output
 
     def _prettify_xml(self, xml_string):
-        return etree.tostring(etree.fromstring(xml_string), pretty_print=True)
+        parser = etree.XMLParser(remove_blank_text=True)
+        xml_tree = etree.fromstring(xml_string, parser)
+        return etree.tostring(xml_tree, pretty_print=True)
 
     def _get_info_provider(self, exchange_record, work_ctx=None, usage=None, **kw):
         """Retrieve component providing info to render a template.
